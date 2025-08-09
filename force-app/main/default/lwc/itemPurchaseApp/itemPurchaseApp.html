@@ -1,0 +1,57 @@
+<template>
+    <lightning-card title="Item Purchase Tool" icon-name="utility:cart">
+        <div class="slds-p-around_medium">
+
+            <!-- Header bar -->
+            <div class="slds-grid slds-wrap slds-align_absolute-center slds-m-bottom_medium slds-grid_vertical-align-center slds-gutters_small">
+                <div class="slds-col slds-grow">
+                    <template if:true={account}>
+                        <span class="slds-m-right_large">{account.Name}</span>
+                        <span class="slds-m-right_large">{account.AccountNumber}</span>
+                        <span>{account.Industry}</span>
+                    </template>
+                </div>
+                <div class="slds-col">
+                    <template if:true={isManager}>
+                        <lightning-button label="Create Item" onclick={openCreateItem}></lightning-button>
+                    </template>
+                    <lightning-button class="slds-m-left_small" label="Cart" variant="brand" onclick={openCart}></lightning-button>
+
+                </div>
+            </div>
+
+            <!-- Filters -->
+            <c-item-filters
+                    filters={filters}
+                    itemcount={items.length}
+                    ondosearch={handleDoSearch}>
+            </c-item-filters>
+
+            <!-- Grid -->
+            <div class="slds-m-vertical_medium slds-grid slds-wrap slds-gutters">
+                <template for:each={items} for:item="it">
+                    <div key={it.Id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <c-item-tile item={it} can-add onshowdetails={handleShowDetails} onadd={handleAddToCart}></c-item-tile>
+                    </div>
+                </template>
+            </div>
+
+        </div>
+    </lightning-card>
+
+    <!-- Details Modal -->
+    <template if:true={isDetailsOpen}>
+        <c-item-details-modal item={selectedItem} onclose={closeDetails}></c-item-details-modal>
+    </template>
+
+    <!-- Cart Modal -->
+    <template if:true={isCartOpen}>
+        <c-cart-modal lines={cart} onclose={closeCart} oncheckout={handleCheckout}></c-cart-modal>
+    </template>
+
+    <!--Create Item Modal -->
+    <template if:true={isCreateOpen}>
+       <!-- TODO -->
+    </template>
+
+</template>

@@ -1,0 +1,15 @@
+<template>
+    <lightning-card title={item.Name} icon-name="standard:product">
+        <div class="slds-p-around_small">
+            <img if:true={item.Image__c} src={item.Image__c} alt={item.Name} style="max-width:100%;max-height:160px"/>
+            <p class="slds-m-top_small">{item.Type__c} • {item.Family__c}</p>
+            <p class="slds-m-top_x-small">Price: {item.Price__c}</p>
+            <div class="slds-m-top_small">
+                <lightning-button label="Details" onclick={showDetails}></lightning-button>
+                <template if:true={canAdd}>
+                    <lightning-button class="slds-m-left_small" variant="brand" label="Add" onclick={add}></lightning-button>
+                </template>
+            </div>
+        </div>
+    </lightning-card>
+</template>
