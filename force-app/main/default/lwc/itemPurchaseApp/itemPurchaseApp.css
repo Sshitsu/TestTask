@@ -1,0 +1,14 @@
+.header-bar {
+    background-color: #f3f6f9;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+}
+
+.btn-create {
+    --slds-c-button-brand-color-background: #4caf50;
+    --slds-c-button-brand-color-background-hover: #449d48;
+}
+.btn-cart {
+    --slds-c-button-brand-color-background: #e53935;
+    --slds-c-button-brand-color-background-hover: #c62828;
+}
