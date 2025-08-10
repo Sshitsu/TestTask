@@ -1,4 +1,5 @@
 public with sharing class UnsplashHttp {
+
 	@TestVisible private static Http injected;
 
 
