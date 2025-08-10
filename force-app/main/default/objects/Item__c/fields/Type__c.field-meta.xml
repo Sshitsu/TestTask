@@ -20,9 +20,39 @@
                 <label>Vegetable</label>
             </value>
             <value>
-                <fullName>Drink</fullName>
+                <fullName>Fruit (Citrus)</fullName>
                 <default>false</default>
-                <label>Drink</label>
+                <label>Fruit (Citrus)</label>
+            </value>
+            <value>
+                <fullName>Fruit (Berry)</fullName>
+                <default>false</default>
+                <label>Fruit (Berry)</label>
+            </value>
+            <value>
+                <fullName>Fruit (False berry)</fullName>
+                <default>false</default>
+                <label>Fruit (False berry)</label>
+            </value>
+            <value>
+                <fullName>Vegetable (Root)</fullName>
+                <default>false</default>
+                <label>Vegetable (Root)</label>
+            </value>
+            <value>
+                <fullName>Vegetable (Tuber)</fullName>
+                <default>false</default>
+                <label>Vegetable (Tuber)</label>
+            </value>
+            <value>
+                <fullName>Vegetable (Bulb)</fullName>
+                <default>false</default>
+                <label>Vegetable (Bulb)</label>
+            </value>
+            <value>
+                <fullName>Vegetable (Fruit culinary)</fullName>
+                <default>false</default>
+                <label>Vegetable (Fruit culinary)</label>
             </value>
         </valueSetDefinition>
     </valueSet>

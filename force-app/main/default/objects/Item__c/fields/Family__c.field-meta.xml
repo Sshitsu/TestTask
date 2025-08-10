@@ -10,34 +10,44 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Citrus</fullName>
+                <fullName>Rosaceae</fullName>
                 <default>false</default>
-                <label>Citrus</label>
+                <label>Rosaceae</label>
             </value>
             <value>
-                <fullName>Berry</fullName>
+                <fullName>Musaceae</fullName>
                 <default>false</default>
-                <label>Berry</label>
+                <label>Musaceae</label>
             </value>
             <value>
-                <fullName>Root</fullName>
+                <fullName>Rutaceae</fullName>
                 <default>false</default>
-                <label>Root</label>
+                <label>Rutaceae</label>
             </value>
             <value>
-                <fullName>Leafy</fullName>
+                <fullName>Vitaceae</fullName>
                 <default>false</default>
-                <label>Leafy</label>
+                <label>Vitaceae</label>
             </value>
             <value>
-                <fullName>SoftDrink</fullName>
+                <fullName>Solanaceae</fullName>
                 <default>false</default>
-                <label>SoftDrink</label>
+                <label>Solanaceae</label>
             </value>
             <value>
-                <fullName>Juice</fullName>
+                <fullName>Apiaceae</fullName>
                 <default>false</default>
-                <label>Juice</label>
+                <label>Apiaceae</label>
+            </value>
+            <value>
+                <fullName>Cucurbitaceae</fullName>
+                <default>false</default>
+                <label>Cucurbitaceae</label>
+            </value>
+            <value>
+                <fullName>Amaryllidaceae</fullName>
+                <default>false</default>
+                <label>Amaryllidaceae</label>
             </value>
         </valueSetDefinition>
     </valueSet>
