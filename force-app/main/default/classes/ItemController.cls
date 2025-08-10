@@ -171,6 +171,40 @@ public with sharing class ItemController {
 		insert pls;
 		return pur.Id;
 	}
+	@AuraEnabled
+	public static Id createItem(Item__c rec, Boolean autoImage){
+		if (rec == null || String.isBlank(rec.Name)) {
+			throw new AuraHandledException('Name is required');
+		}
+		// Автокартинка, если нужно и не задано вручную
+		if (autoImage == true && String.isBlank(String.valueOf(rec.Image__c))) {
+			try {
+				String url = UnsplashService.findImageUrl(rec.Name);
+				if (!String.isBlank(url)) {
+					rec.Image__c = url;
+				}
+			} catch (Exception e) {
+				// Тихо игнорируем сбой Unsplash, чтобы не ломать создание
+			}
+		}
+		insert rec;
+		return rec.Id;
+	}
+
+	@AuraEnabled
+	public static String refreshItemImage(Id itemId){
+		if (itemId == null) throw new AuraHandledException('Item Id is required');
+		String url = null;
+		try {
+			url = UnsplashService.findImageUrlByItem(itemId);
+		} catch (Exception e) {
+			throw new AuraHandledException('Unsplash error: ' + e.getMessage());
+		}
+		if (!String.isBlank(url)) {
+			update new Item__c(Id = itemId, Image__c = url);
+		}
+		return url; // может быть null, если ничего не нашли
+	}
 
 
 }

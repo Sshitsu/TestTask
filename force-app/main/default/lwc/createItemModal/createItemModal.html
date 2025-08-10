@@ -1,0 +1,44 @@
+<template>
+    <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+        <div class="slds-modal__container">
+            <header class="slds-modal__header">
+                <h2 class="slds-text-heading_medium">Create Item</h2>
+            </header>
+
+            <div class="slds-modal__content slds-p-around_medium">
+                <div class="slds-grid slds-wrap slds-gutters">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-input label="Name" value={name} onchange={onName}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                        <lightning-input type="number" label="Price" value={price} onchange={onPrice}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                        <lightning-combobox label="Type" value={typeValue} options={typeOptions} onchange={onType}></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <lightning-combobox label="Family" value={familyValue} options={familyOptions} onchange={onFamily}></lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea label="Description" value={description} onchange={onDesc}></lightning-textarea>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-input type="url" label="Image URL (optional)" value={image} onchange={onImage}></lightning-input>
+                        <lightning-input type="checkbox" label="Auto-image from Unsplash" checked={autoImage} onchange={onAuto}></lightning-input>
+                        <template if:true={image}>
+                            <div class="slds-m-top_small slds-align_absolute-center">
+                                <img src={image} alt="preview" style="max-width:100%;max-height:200px;object-fit:cover;">
+                            </div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="slds-modal__footer">
+                <lightning-button label="Cancel" onclick={close}></lightning-button>
+                <lightning-button class="slds-m-left_small" variant="brand" label="Create" onclick={create} disabled={isCreateDisabled}></lightning-button>
+            </footer>
+        </div>
+    </section>
+    <div class="slds-backdrop slds-backdrop_open"></div>
+</template>

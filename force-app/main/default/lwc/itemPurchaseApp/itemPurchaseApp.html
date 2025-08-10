@@ -38,7 +38,7 @@
             <div class="slds-m-vertical_medium slds-grid slds-wrap slds-gutters">
                 <template for:each={items} for:item="it">
                     <div key={it.Id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
-                        <c-item-tile item={it} can-add onshowdetails={handleShowDetails} onadd={handleAddToCart}></c-item-tile>
+                        <c-item-tile item={it} can-add="isManager" onshowdetails={handleShowDetails} onadd={handleAddToCart}></c-item-tile>
                     </div>
                 </template>
             </div>
@@ -58,7 +58,11 @@
 
     <!--Create Item Modal -->
     <template if:true={isCreateOpen}>
-       <!-- TODO -->
+        <c-create-item-modal
+                picklist-filters={filters}
+                onclose={closeCreateItem}
+                oncreated={handleItemCreated}>
+        </c-create-item-modal>
     </template>
 
 </template>
