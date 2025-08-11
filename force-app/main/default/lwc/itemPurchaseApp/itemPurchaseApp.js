@@ -66,10 +66,18 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
     closeDetails(){ this.isDetailsOpen = false; this.selectedItem = null; }
 
     handleAddToCart(e){
-        const { id, price } = e.detail;
+        const { id, name, price } = e.detail;
         const line = this.cart.find(l => l.itemId === id);
-        if(line){ line.amount += 1; this.cart = [...this.cart]; }
-        else { this.cart = [...this.cart, { itemId: id, amount: 1, unitCost: price }]; }
+
+        if(line){
+        line.amount += 1;
+         this.cart = [...this.cart];
+         } else {
+         this.cart = [...this.cart,
+         { itemId: id,
+          name,
+          amount: 1,
+          unitCost: price }]; }
         this.dispatchEvent(new ShowToastEvent({ title: 'Added', message: 'Item added to cart', variant: 'success' }));
     }
 
@@ -77,21 +85,39 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
     closeCart(){ this.isCartOpen = false; }
 
     async handleCheckout(){
-        if(!this.accountId){
-            this.dispatchEvent(new ShowToastEvent({ title: 'Error', message: 'Open from Account button', variant: 'error' }));
-            return;
+        try{
+            if(!this.account?.Id){
+                  this.dispatchEvent(new ShowToastEvent({ title: 'No Account', message: 'Open from Account', variant: 'warning' }));
+                  return;
+            }
+            const lines = (this.cart || []).map(l => ({
+                  itemId: l.itemId,
+                  amount: l.amount,
+                  unitCost: l.unitCost
+                }));
+            const purchaseId = await createPurchase({ accountId: this.account.Id, lines });
+            this[NavigationMixin.Navigate]({
+                 type: 'standard__recordPage',
+                 attributes: {
+                   recordId: purchaseId,
+                   objectApiName: 'Purchase__c',
+                   actionName: 'view'
+                 }
+            });
+        } catch(e){
+            console.error(e);
+            this.dispatchEvent(new ShowToastEvent({
+               title: 'Checkout error',
+               message: e?.body?.message || e.message,
+               variant: 'error'
+            }));
         }
-        const purchaseId = await createPurchase({ accountId: this.accountId, lines: this.cart });
-        this.cart = [];
-        this.isCartOpen = false;
-        this[NavigationMixin.Navigate]({ type: 'standard__recordPage', attributes: { recordId: purchaseId, objectApiName: 'Purchase__c', actionName: 'view' } });
     }
     closeCreateItem(){
       this.isCreateOpen = false;
     }
 
     handleItemCreated(e){
-
       this.isCreateOpen = false;
       try {
         this.dispatchEvent(
