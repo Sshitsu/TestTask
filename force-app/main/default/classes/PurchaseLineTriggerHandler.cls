@@ -1,6 +1,7 @@
 public with sharing class PurchaseLineTriggerHandler {
 
-	public static void recalc(List<PurchaseLine__c> newList, List<PurchaseLine__c> oldList, Boolean isDelete){
+	public static void recalc(
+			List<PurchaseLine__c> newList, List<PurchaseLine__c> oldList, Boolean isDelete){
 		Set<Id> purchaseIds = new Set<Id>();
 
 		if(!isDelete && newList != null){
@@ -41,9 +42,13 @@ public with sharing class PurchaseLineTriggerHandler {
 		Map<Id, Integer> totalItemsByPurchase = new Map<Id, Integer>();
 		for (AggregateResult ar : [
 				SELECT PurchaseId__c pid, SUM(Amount__c) total
-				FROM PurchaseLine__c WHERE PurchaseId__c IN :purchaseIds GROUP BY PurchaseId__c
+				FROM PurchaseLine__c
+				WHERE PurchaseId__c IN :purchaseIds
+				GROUP BY PurchaseId__c
 		]){
-			totalItemsByPurchase.put((Id)ar.get('pid'), (Integer)ar.get('total'));
+			Decimal totalDecimal = (Decimal) ar.get('total');
+			Integer totalInt = totalDecimal != null ? totalDecimal.intValue() : 0;
+			totalItemsByPurchase.put((Id) ar.get('pid'), totalInt);
 		}
 		return totalItemsByPurchase;
 	}

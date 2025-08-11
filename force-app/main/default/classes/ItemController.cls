@@ -146,9 +146,9 @@ public with sharing class ItemController {
 
 
 	public class CartLine {
-		@AuraEnabled public Id itemId;
-		@AuraEnabled public Integer amount;
-		@AuraEnabled public Decimal unitCost;
+		@AuraEnabled public Id itemId { get; set; }
+		@AuraEnabled public Integer amount { get; set; }
+		@AuraEnabled public Decimal unitCost { get; set; }
 	}
 
 	@AuraEnabled
@@ -156,21 +156,82 @@ public with sharing class ItemController {
 		if (accountId == null) throw new AuraHandledException('AccountId is required');
 		if (lines == null || lines.isEmpty()) throw new AuraHandledException('Cart is empty');
 
-		Purchase__c pur = new Purchase__c(ClientId__c = accountId);
-		insert pur;
+		Savepoint sp = Database.setSavepoint();
+		String step = 'START';
+		try {
+			step = 'INSERT_PURCHASE';
+			Purchase__c pur = new Purchase__c(
+					ClientId__c = accountId,
 
-		List<PurchaseLine__c> pls = new List<PurchaseLine__c>();
-		for (CartLine l : lines){
-			pls.add(new PurchaseLine__c(
-					PurchaseId__c = pur.Id,
-					ItemId__c = l.itemId,
-					Amount__c = l.amount,
-					UnitCost__c = l.unitCost
-			));
+					Name = 'Purchase ' + Datetime.now().format('yyyyMMdd-HHmmss')
+			);
+			insert pur;
+
+			step = 'BUILD_LINES';
+			List<PurchaseLine__c> pls = new List<PurchaseLine__c>();
+			Integer idx = 0;
+			for (CartLine l : lines){
+				idx++;
+
+				if (l == null) {
+					throw new AuraHandledException('Line #' + idx + ': empty line');
+				}
+				if (l.itemId == null) {
+					throw new AuraHandledException('Line #' + idx + ': itemId is required');
+				}
+
+
+				Integer qty;
+				try {
+					qty = (l.amount == null ? 0 : Integer.valueOf(String.valueOf(l.amount)));
+				} catch (Exception convEx) {
+					throw new AuraHandledException('Line #' + idx + ': amount is not an integer (' + String.valueOf(l.amount) + ')');
+				}
+				if (qty <= 0) {
+					throw new AuraHandledException('Line #' + idx + ': amount must be > 0 (got ' + qty + ')');
+				}
+
+				Decimal price = (l.unitCost == null ? 0 : l.unitCost);
+
+				pls.add(new PurchaseLine__c(
+						PurchaseId__c = pur.Id,
+						ItemId__c     = l.itemId,
+						Amount__c     = qty,
+						UnitCost__c   = price,
+						Name          = 'Line ' + idx
+				));
+			}
+
+			step = 'INSERT_LINES';
+			Database.SaveResult[] sr = Database.insert(pls, false);
+			for (Integer i = 0; i < sr.size(); i++) {
+				if (!sr[i].isSuccess()) {
+					List<String> msgs = new List<String>();
+					for (Database.Error err : sr[i].getErrors()) msgs.add(err.getMessage());
+					throw new AuraHandledException('STEP=' + step + ' Line #' + (i+1) + ': ' + String.join(msgs, ' | '));
+				}
+			}
+
+			return pur.Id;
+
+		} catch (AuraHandledException ahex) {
+			Database.rollback(sp);
+			// Не затираем сообщение
+			throw ahex;
+		} catch (DmlException dmlex) {
+			Database.rollback(sp);
+			List<String> msgs = new List<String>{ 'STEP=' + step };
+			for (Integer i = 0; i < dmlex.getNumDml(); i++) msgs.add('[' + i + '] ' + dmlex.getDmlMessage(i));
+			throw new AuraHandledException(String.join(msgs, ' | '));
+		} catch (Exception ex) {
+			Database.rollback(sp);
+			throw new AuraHandledException('STEP=' + step + ' ' + ex.getTypeName() + ': ' + String.valueOf(ex.getMessage()));
 		}
-		insert pls;
-		return pur.Id;
 	}
+
+
+
+
 	@AuraEnabled
 	public static Id createItem(Item__c rec, Boolean autoImage){
 		if (rec == null || String.isBlank(rec.Name)) {
