@@ -2,45 +2,57 @@
     <lightning-card title="Item Purchase Tool" icon-name="utility:cart">
         <div class="slds-p-around_medium">
 
+            <!-- Header -->
             <div class="header-bar slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-bottom_medium">
-
-
                 <div class="slds-col">
                     <template if:true={isManager}>
                         <lightning-button class="btn-create" label="Create Item" variant="brand" onclick={openCreateItem}></lightning-button>
                     </template>
                 </div>
 
-                <div class="slds-col slds-text-align_center " >
+                <div class="slds-col slds-text-align_center">
                     <template if:true={account}>
                         <div class="slds-box">
-                            <span class="slds-m-right_large slds-text-heading_large" >{account.Name}</span>
+                            <span class="slds-m-right_large slds-text-heading_large">{account.Name}</span>
                             <span class="slds-m-right_large slds-text-heading_large">{account.AccountNumber}</span>
-                            <span class="slis-m-right_large slds-text-heading_large" > {account.Industry}</span>
+                            <span class="slds-m-right_large slds-text-heading_large">{account.Industry}</span>
                         </div>
                     </template>
                 </div>
 
                 <div class="slds-col slds-text-align_right">
-                    <lightning-button class="btn-cart" label="Open a cart" variant="brand" onclick={openCart}></lightning-button>
+                    <lightning-button class="btn-cart" label="Cart" variant="brand" onclick={openCart}></lightning-button>
                 </div>
-
             </div>
 
-            <!-- Filters -->
-            <c-item-filters
-                    filters={filters}
-                    itemcount={items.length}
-                    ondosearch={handleDoSearch}>
-            </c-item-filters>
+            <!-- Search centered -->
+            <div class="slds-m-bottom_medium slds-text-align_center">
+                <lightning-input type="search" placeholder="Search" onchange={handleSearch}></lightning-input>
+            </div>
 
-            <!-- Grid -->
-            <div class="slds-m-vertical_medium slds-grid slds-wrap slds-gutters">
-                <template for:each={items} for:item="it">
-                    <div key={it.Id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
-                        <c-item-tile item={it} can-add={isManager} onshowdetails={handleShowDetails} onadd={handleAddToCart}></c-item-tile>
+            <!-- Main layout: items + filters -->
+            <div class="slds-grid slds-gutters">
+
+                <!-- Left: Items -->
+                <div class="slds-col slds-size_3-of-4">
+                    <div class="slds-m-vertical_medium slds-grid slds-wrap slds-gutters">
+                        <template for:each={items} for:item="it">
+                            <div key={it.Id} class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                                <c-item-tile item={it} can-add={isManager} onshowdetails={handleShowDetails} onadd={handleAddToCart}></c-item-tile>
+                            </div>
+                        </template>
                     </div>
-                </template>
+                </div>
+
+                <!-- Right: Filters -->
+                <div class="slds-col slds-size_1-of-4">
+                    <c-item-filters
+                            filters={filters}
+                            itemcount={items.length}
+                            ondosearch={handleDoSearch}>
+                    </c-item-filters>
+                </div>
+
             </div>
 
         </div>
@@ -56,7 +68,7 @@
         <c-cart-modal lines={cart} onclose={closeCart} oncheckout={handleCheckout}></c-cart-modal>
     </template>
 
-    <!--Create Item Modal -->
+    <!-- Create Item Modal -->
     <template if:true={isCreateOpen}>
         <c-create-item-modal
                 picklist-filters={filters}
@@ -64,5 +76,4 @@
                 oncreated={handleItemCreated}>
         </c-create-item-modal>
     </template>
-
 </template>

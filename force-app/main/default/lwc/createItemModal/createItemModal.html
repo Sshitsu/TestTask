@@ -11,7 +11,14 @@
                         <lightning-input label="Name" value={name} onchange={onName}></lightning-input>
                     </div>
                     <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
-                        <lightning-input type="number" label="Price" value={price} onchange={onPrice}></lightning-input>
+                        <lightning-input
+                                type="number"
+                                label="Price"
+                                step="0.01"
+                                value={priceDisplay}
+                                oninput={onPriceInput}
+                                onblur={onPriceBlur}>
+                        </lightning-input>
                     </div>
                     <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
                         <lightning-combobox label="Type" value={typeValue} options={typeOptions} onchange={onType}></lightning-combobox>
