@@ -1,7 +1,10 @@
 import { LightningElement, api } from 'lwc';
 import refreshItemImage from '@salesforce/apex/ItemController.refreshItemImage';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
+/**
+ * ItemDetailsModal
+ * Shows details for a single item and can refresh its image.
+ */
 export default class ItemDetailsModal extends LightningElement {
     @api item;
     close(){ this.dispatchEvent(new CustomEvent('close')); }

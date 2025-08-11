@@ -49,6 +49,42 @@
                 <default>false</default>
                 <label>Amaryllidaceae</label>
             </value>
+            <value>
+                <fullName>Berry</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Berry</label>
+            </value>
+            <value>
+                <fullName>Citrus</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Citrus</label>
+            </value>
+            <value>
+                <fullName>Juice</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Juice</label>
+            </value>
+            <value>
+                <fullName>Leafy</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Leafy</label>
+            </value>
+            <value>
+                <fullName>Root</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Root</label>
+            </value>
+            <value>
+                <fullName>SoftDrink</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>SoftDrink</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

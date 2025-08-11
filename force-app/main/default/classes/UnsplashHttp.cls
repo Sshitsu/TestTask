@@ -1,8 +1,14 @@
+/*
+ * UnsplashHttp
+ *
+ * Utility class for building and sending HTTP requests to the Unsplash API.
+ */
 public with sharing class UnsplashHttp {
 
+	// This is for test mock injection
 	@TestVisible private static Http injected;
 
-
+	//
 	public static HttpRequest buildGet(String absoluteUrl, String accessKey){
 		HttpRequest request = new HttpRequest();
 		request.setMethod('GET');
@@ -26,6 +32,7 @@ public with sharing class UnsplashHttp {
 		}
 	}
 
+	// This is for test mock injection
 	@TestVisible
 	static void setHttp(Http h){ injected = h; }
 }

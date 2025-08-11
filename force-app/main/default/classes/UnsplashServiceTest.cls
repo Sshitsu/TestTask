@@ -1,3 +1,6 @@
+/*
+ * Just test class
+ */
 @IsTest
 private class UnsplashServiceTest {
 

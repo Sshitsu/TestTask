@@ -7,22 +7,48 @@ import createPurchase from '@salesforce/apex/ItemController.createPurchase';
 import isCurrentUserManager from '@salesforce/apex/ItemController.isCurrentUserManager';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
+
+/**
+ * ItemPurchaseApp
+ * Main app component that:
+ *   Detects current Account from URL/context
+ *   Loads picklist filters and items
+ *   Manages cart (add, open/close, checkout)
+ *   Navigates to created Purchase__c
+ */
 export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
-  account; filters; items = []; cart = [];
-  isCartOpen = false; isDetailsOpen = false; selectedItem;
-  searchText = ''; selectedFamilies = []; selectedTypes = [];
-  isManager = false;
+  account; // current Account record
+  filters; // picklist filters for search
+  items = []; // search results
+  cart = []; // cart lines: { itemId, name, amount, unitCost }
+
+  // UI states
+  isCartOpen = false;
+  isDetailsOpen = false;
+  selectedItem;
   isCreateOpen = false;
 
+   // Search state
+  searchText = '';
+  selectedFamilies = [];
+  selectedTypes = [];
 
+  // Permission
+  isManager = false;
+
+
+     // Account context
   _accountId;
-
   get accountId() { return this._accountId; }
 
   connectedCallback(){ this.init(); }
 
   openCreateItem(){ this.isCreateOpen = true; }
 
+    /**
+     * Parse Account Id from the page ref (c__accountId from state or recordId from attributes)
+     * Re-init when account changes
+     */
   @wire(CurrentPageReference)
   parsePageRef(ref){
     if (!ref) return;
@@ -39,7 +65,13 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
 
 
   }
-
+     /**
+      * Initial data load:
+      *  -Load Account (if accountId known)
+      *   Check manager flag
+      *   Load picklist filters
+      *   Run the initial search
+      */
   async init(){
     try {
       if(this.accountId){ this.account = await getAccount({ accountId: this.accountId }); }
@@ -55,7 +87,9 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
       }));
     }
   }
+   // --- Search handling ---
 
+  /** Handle search form submit from child component */
   handleDoSearch(e){
     const { searchText, families, types } = e.detail;
     this.searchText = searchText || '';
@@ -63,7 +97,7 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
     this.selectedTypes = types || [];
     this.doSearch();
   }
-
+  /** Perform Apex search with current filters */
   async doSearch(){
     try {
       this.items = await searchItems({
@@ -87,7 +121,10 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
 
   handleShowDetails(e){ this.selectedItem = e.detail; this.isDetailsOpen = true; }
   closeDetails(){ this.isDetailsOpen = false; this.selectedItem = null; }
-
+   /**
+     * Add an item to the cart.
+     * Accepts flexible payloads from children and resolves a usable itemId/name/price.
+     */
   handleAddToCart(e){
     const d = e.detail || {};
     const resolvedId = d.itemId || d.id || d.Id || d.item?.Id;
@@ -123,6 +160,13 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
   closeCart(){ this.isCartOpen = false; }
 
 
+  /**
+   * Checkout:
+   *  Build lines payload (itemId, amount, unitCost)
+   *  Validate account and non-empty lines
+   *  Call Apex to create Purchase__c
+   *  Navigate to the created recordPage
+   */
  async handleCheckout(event){
    const src = event?.detail?.lines?.length ? event.detail.lines : this.cart;
 

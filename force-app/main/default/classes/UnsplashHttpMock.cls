@@ -1,3 +1,8 @@
+/*
+ * UnsplashHttpMock
+ *
+ * Utility class for building and sending HTTP requests to the Unsplash API in test methods.
+ */
 @IsTest
 global class UnsplashHttpMock implements HttpCalloutMock{
 	global Integer code; global String body; global String status;

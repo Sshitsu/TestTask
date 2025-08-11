@@ -1,3 +1,8 @@
+/*
+ * UnsplashService
+ *
+ * Send request to Unsplash API by using UnsplashHttp and then parse reply by using UnsplashJsonParser
+ */
 public with sharing class UnsplashService {
 
 	public static final String IMAGE_SIZE = 'small';

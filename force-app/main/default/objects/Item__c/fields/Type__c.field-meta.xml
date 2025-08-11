@@ -54,6 +54,12 @@
                 <default>false</default>
                 <label>Vegetable (Fruit culinary)</label>
             </value>
+            <value>
+                <fullName>Drink</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Drink</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

@@ -1,4 +1,8 @@
-
+/*
+ * UnsplashHttpTest
+ *
+ * Test class
+ */
 @IsTest
 private class UnsplashHttpTest {
 	@IsTest

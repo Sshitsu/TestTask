@@ -1,7 +1,12 @@
 import { LightningElement, api } from 'lwc';
 import createItem from '@salesforce/apex/ItemController.createItem';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
+/**
+ * CreateItemModal
+ * Modal for creating a new Item__c.
+ * Builds picklist options from provided filters
+ * Normalizes and validates price input
+ */
 export default class CreateItemModal extends LightningElement {
     @api picklistFilters;
 

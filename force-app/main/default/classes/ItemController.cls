@@ -1,9 +1,27 @@
+
+/**
+ * ItemController
+ * Apex controller for working with Item__c, Purchase__c, and PurchaseLines__c objects.
+ *
+ * Main functionality:
+ *  - Retrieve account information
+ *  - Get picklist values for filtering
+ *  - Search items by multiple filters (name, description, family, type)
+ *  - Check user manager permissions
+ *  - Create purchases and purchase lines
+ *  - Create items with optional automatic image retrieval
+ *  - Refresh an item’s image via Unsplash API
+ *  */
 public with sharing class ItemController {
 
-	// Limit for items
+	// Maximum number of records returned in queries
 	private static final Integer MAX_LIMIT = 200;
 
-	// Get information about Account (Name, AccountNumber, Industry)
+	/**
+	* Retrieves Account information by Id.
+	* @param accountId - Account record Id
+	* @return Account record with Id, Name, AccountNumber, Industry
+	*/
 	@AuraEnabled
 	public static Account getAccount(Id accountId){
 		if(accountId == null) return null;
@@ -17,7 +35,11 @@ public with sharing class ItemController {
 		LIMIT 1];
 	}
 
-	// We gather all types and families which were chosen
+	/**
+     * Returns a map of possible picklist values for filtering items.
+     * Used in the UI to build search filters.
+     * @return Map<String, List<String>> - key: field name, value: list of picklist values
+     */
 	@AuraEnabled(cacheable=true)
 	public static Map<String, List<String>> getPicklistFilters(){
 		Map<String, List<String>> res = new Map<String, List<String>>();
@@ -26,6 +48,7 @@ public with sharing class ItemController {
 		return res;
 	}
 
+	// Retrieves picklist values for the specified object and field
 	private static List<String> getPicklist(String sObj, String field){
 		List<String> vals = new List<String>();
 		Schema.DescribeSObjectResult d = Schema.getGlobalDescribe().get(sObj).getDescribe();
@@ -36,7 +59,14 @@ public with sharing class ItemController {
 		return vals;
 	}
 
-	// Main searchItems method, which try to find Item by Filters
+	/**
+     * Searches for items by filters.
+     * @param searchText - text to search in Name or Description__c
+     * @param families - list of selected Family__c value
+     * @param types - list of selected Type__c value
+     * @return List<Item__c> matching the search criteria
+	 * If 0 filters were chosen then just return all Items
+     */
 	@AuraEnabled(cacheable=true)
 	public static List<Item__c> searchItems(String searchText, List<String> families, List<String> types) {
 
@@ -144,21 +174,31 @@ public with sharing class ItemController {
 		].IsManager__c;
 	}
 
-
+	// Data structure representing a single cart line
 	public class CartLine {
 		@AuraEnabled public Id itemId { get; set; }
 		@AuraEnabled public Integer amount { get; set; }
 		@AuraEnabled public Decimal unitCost { get; set; }
 	}
-
+	/**
+	* Creates a Purchase__c record and its related PurchaseLine__c records.
+	* @param accountId - Id of the client (Account)
+	* @param lines - list of cart lines
+	* @return Id of the created Purchase__c
+	*/
 	@AuraEnabled
 	public static Id createPurchase(Id accountId, List<CartLine> lines){
+		// Chek if accountId is NULL then throw AuraHandledException(AccountId is required)
 		if (accountId == null) throw new AuraHandledException('AccountId is required');
+		// Chek if lines are NULL pr Empty then throw AuraHandledException(AccountId is required)
 		if (lines == null || lines.isEmpty()) throw new AuraHandledException('Cart is empty');
 
+		// Make save before all
 		Savepoint sp = Database.setSavepoint();
+		// String step this is a value for debug
 		String step = 'START';
 		try {
+			// Insert new Purchase
 			step = 'INSERT_PURCHASE';
 			Purchase__c pur = new Purchase__c(
 					ClientId__c = accountId,
@@ -167,6 +207,7 @@ public with sharing class ItemController {
 			);
 			insert pur;
 
+			// Build purchase lines
 			step = 'BUILD_LINES';
 			List<PurchaseLine__c> pls = new List<PurchaseLine__c>();
 			Integer idx = 0;
@@ -216,7 +257,6 @@ public with sharing class ItemController {
 
 		} catch (AuraHandledException ahex) {
 			Database.rollback(sp);
-			// Не затираем сообщение
 			throw ahex;
 		} catch (DmlException dmlex) {
 			Database.rollback(sp);
@@ -231,7 +271,13 @@ public with sharing class ItemController {
 
 
 
-
+	/**
+     * Creates an Item__c record.
+     * If autoImage = true and Image__c is blank, tries to find an image using UnsplashService.
+     * @param rec - Item__c record to create
+     * @param autoImage - flag to auto-populate the image
+     * @return Id of the created Item__c
+     */
 	@AuraEnabled
 	public static Id createItem(Item__c rec, Boolean autoImage){
 		if (rec == null || String.isBlank(rec.Name)) {
@@ -251,7 +297,11 @@ public with sharing class ItemController {
 		insert rec;
 		return rec.Id;
 	}
-
+	/**
+   * Refreshes an item's image using UnsplashService.
+   * @param itemId - Id of the item
+   * @return URL of the new image (null if not found)
+   */
 	@AuraEnabled
 	public static String refreshItemImage(Id itemId){
 		if (itemId == null) throw new AuraHandledException('Item Id is required');

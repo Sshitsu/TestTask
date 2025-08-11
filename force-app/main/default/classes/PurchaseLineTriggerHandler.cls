@@ -1,13 +1,26 @@
+
+/**
+ * PurchaseLineTriggerHandler
+ *
+ * Trigger handler for recalculating summary fields on Purchase__c
+ * whenever PurchaseLine__c records are inserted, updated, or deleted.
+ *
+ * Main logic:
+ *  - Calculates TotalItems__c (sum of Amount__c)
+ *  - Calculates GrandTotal__c (sum of Amount__c * UnitCost__c)
+ *  - Updates the related Purchase__c records
+ */
 public with sharing class PurchaseLineTriggerHandler {
 
-	public static void recalc(
-			List<PurchaseLine__c> newList, List<PurchaseLine__c> oldList, Boolean isDelete){
+
+	public static void recalc(List<PurchaseLine__c> newList, List<PurchaseLine__c> oldList, Boolean isDelete){
 		Set<Id> purchaseIds = new Set<Id>();
 
 		if(!isDelete && newList != null){
 			for(PurchaseLine__c pl : newList){
 				if(pl.PurchaseId__c != null) purchaseIds.add(pl.PurchaseId__c);
 			}
+
 		}
 		if(oldList != null){
 			for(PurchaseLine__c pl : oldList){

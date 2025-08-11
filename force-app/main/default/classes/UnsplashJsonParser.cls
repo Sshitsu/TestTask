@@ -1,3 +1,8 @@
+/*
+ * UnsplashJsonParser
+ *
+ * Class which are parsing JSON, that we got from Unsplash API
+ */
 public with sharing class UnsplashJsonParser {
 	public static String parseJsonAndGetImageUrl(String jsonBody, String imageSize){
 		if (String.isBlank(jsonBody)) return null;

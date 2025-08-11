@@ -1,3 +1,6 @@
+/*
+ * Test class for JsonParser
+ */
 @IsTest
 private class UnsplashJsonParserTest {
 
