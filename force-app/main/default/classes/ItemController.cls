@@ -176,7 +176,7 @@ public with sharing class ItemController {
 		if (rec == null || String.isBlank(rec.Name)) {
 			throw new AuraHandledException('Name is required');
 		}
-		// Автокартинка, если нужно и не задано вручную
+
 		if (autoImage == true && String.isBlank(String.valueOf(rec.Image__c))) {
 			try {
 				String url = UnsplashService.findImageUrl(rec.Name);
@@ -184,7 +184,7 @@ public with sharing class ItemController {
 					rec.Image__c = url;
 				}
 			} catch (Exception e) {
-				// Тихо игнорируем сбой Unsplash, чтобы не ломать создание
+
 			}
 		}
 		insert rec;
@@ -203,7 +203,7 @@ public with sharing class ItemController {
 		if (!String.isBlank(url)) {
 			update new Item__c(Id = itemId, Image__c = url);
 		}
-		return url; // может быть null, если ничего не нашли
+		return url;
 	}
 
 

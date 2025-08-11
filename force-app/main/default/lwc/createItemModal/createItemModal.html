@@ -23,7 +23,6 @@
                         <lightning-textarea label="Description" value={description} onchange={onDesc}></lightning-textarea>
                     </div>
                     <div class="slds-col slds-size_1-of-1">
-                        <lightning-input type="url" label="Image URL (optional)" value={image} onchange={onImage}></lightning-input>
                         <lightning-input type="checkbox" label="Auto-image from Unsplash" checked={autoImage} onchange={onAuto}></lightning-input>
                         <template if:true={image}>
                             <div class="slds-m-top_small slds-align_absolute-center">
@@ -35,7 +34,7 @@
             </div>
 
             <footer class="slds-modal__footer">
-                <lightning-button label="Cancel" onclick={close}></lightning-button>
+                <lightning-button label="Close" onclick={close}></lightning-button>
                 <lightning-button class="slds-m-left_small" variant="brand" label="Create" onclick={create} disabled={isCreateDisabled}></lightning-button>
             </footer>
         </div>

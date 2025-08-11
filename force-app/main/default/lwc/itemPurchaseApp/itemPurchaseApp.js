@@ -27,7 +27,7 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
             if(this.accountId){ this.account = await getAccount({ accountId: this.accountId }); }
             this.isManager = await isCurrentUserManager();
             this.filters = await getPicklistFilters();
-            // начальный список (пустой поиск)
+
             await this.doSearch();
         } catch(e) { /* toast + console */ }
     }
@@ -85,5 +85,19 @@ export default class ItemPurchaseApp extends NavigationMixin(LightningElement) {
         this.cart = [];
         this.isCartOpen = false;
         this[NavigationMixin.Navigate]({ type: 'standard__recordPage', attributes: { recordId: purchaseId, objectApiName: 'Purchase__c', actionName: 'view' } });
+    }
+    closeCreateItem(){
+      this.isCreateOpen = false;
+    }
+
+    handleItemCreated(e){
+
+      this.isCreateOpen = false;
+      try {
+        this.dispatchEvent(
+          new ShowToastEvent({ title: 'Item created', message: e?.detail?.id, variant: 'success' })
+        );
+      } catch {}
+      this.doSearch();
     }
 }
