@@ -1,4 +1,5 @@
 import { LightningElement, api } from 'lwc';
+
 export default class ItemFilters extends LightningElement {
     @api itemcount = 0;
     searchText = '';
