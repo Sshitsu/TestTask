@@ -131,4 +131,4 @@ This project fully implements the **"Test Task – Item Purchase Tool"** require
 - **Logging**: In a production scenario, it would be beneficial to add more detailed logging (e.g., debug or custom log records) for troubleshooting and monitoring.
 - **Testing**: While the core functionality works, more comprehensive unit tests and integration tests should be implemented to cover edge cases and ensure long-term stability.
 - **Admin User Creation**: After completing the task, an administrator user `dev@truesolv.com` was created in the Salesforce Developer instance for review purposes.
-- **Unmanaged Package**: Sorry but I didn't have time to make unmanaged package, because my average test coverage across all Apex Classes and Triggers is 35%.
+- **Unmanaged Package**: Sorry but I didn't have time to make unmanaged package, because my average test coverage across all Apex Classes and Triggers is 35%. And when I was writing it, the deadline had already been over. 
